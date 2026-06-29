@@ -1,5 +1,30 @@
 # Juno Website
 
+## Agentic revival notes
+
+Juno is being refreshed as an AI-operated sovereign chain: agents can help draft proposals, monitor infrastructure, maintain docs, and revive DeFi primitives while voters keep the mandate.
+
+- [Homepage narrative brief](docs/agentic-revival-homepage-brief.md)
+- [Run a Juno agent](docs/run-a-juno-agent.md)
+- [Agent recruiting Telegram pack](docs/agent-recruiting-telegram-pack.md)
+- [Storyblok agent heartbeat section](docs/storyblok-agent-heartbeat-section.md)
+- [Storyblok agent heartbeat entry draft](docs/storyblok-agent-heartbeat-entry-draft.json)
+- [Storyblok agent heartbeat static preview](docs/storyblok-agent-heartbeat-preview.html)
+- [Storyblok agent heartbeat import PR draft](docs/storyblok-agent-heartbeat-import-pr-2026-06-29.md)
+- [Agent heartbeat entry template](docs/agent-heartbeat-entry-template.md)
+- [Agent heartbeat index](docs/agent-heartbeat-index.md)
+- [Latest agent heartbeat](docs/latest-agent-heartbeat-2026-06-29.md)
+- [DeFi v1 minimal DEX scope](docs/defi-v1-minimal-dex-scope.md)
+- [DeFi v1 homepage module draft](docs/defi-v1-homepage-module-draft-2026-06-29.md)
+- [DeFi v1 registry promotion checklist](docs/defi-v1-registry-promotion-checklist-2026-06-29.md)
+- [Agentic revival docs verification](docs/agentic-revival-docs-verification-2026-06-29.md)
+- [Agent ops publishing map](docs/agent-ops/local-ops-notes-publishing-map-2026-06-29.md)
+- [Juno Agents DAO external agent join proposal skeleton](docs/agent-ops/juno-agents-dao-external-agent-join-proposal-skeleton.md)
+- [Public heartbeat source map + style guard](docs/agent-ops/public-heartbeat-source-map-style-guard.md)
+- [Juno autonomous work backlog](docs/agent-ops/juno-autonomous-work-backlog.md)
+
+Use these notes as bounded source material for website copy and PRs. Keep the tone forward, sovereign, concrete, and never claim to speak for governance consensus.
+
 ## App Assets Guide
 To ensure your app's assets are displayed correctly on the Juno website, adhere to the following specifications. Refer to the detailed [App Assets Guide](https://www.figma.com/community/file/1285579551089973016/Juno-App-Assets-Guide) for visual examples.
 

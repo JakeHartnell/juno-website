@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent heartbeat homepage section</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #140f0c; color: #fff7ed; }
+    body { margin: 0; padding: 32px; }
+    .fixture-meta { max-width: 1040px; margin: 0 auto 24px; color: #d6c1ad; font-size: 14px; }
+    .sb-appsection { max-width: 1040px; margin: 0 auto; padding: 48px; border: 1px solid #8b5e3c; border-radius: 28px; background: linear-gradient(135deg, #3b2418, #19110d); box-shadow: 0 20px 80px rgba(0,0,0,.35); }
+    .sb-appheadline { margin: 0 0 16px; }
+    h2.sb-appheadline { max-width: 720px; font-size: clamp(40px, 7vw, 80px); line-height: .95; letter-spacing: -0.06em; }
+    p.sb-appheadline { color: #f59e0b; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .sb-richtext { max-width: 760px; color: #f4dcc8; font-size: 18px; line-height: 1.65; }
+    .sb-appgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 32px 0; }
+    .sb-appinfobox { min-height: 150px; padding: 24px; border: 1px solid rgba(245,158,11,.35); border-radius: 20px; background: rgba(255,255,255,.06); }
+    .sb-appinfobox p { color: #ead7c7; line-height: 1.5; }
+    .sb-appbutton { display: inline-flex; margin-right: 12px; margin-bottom: 12px; padding: 14px 20px; border-radius: 999px; background: #f59e0b; color: #160f0a; font-weight: 800; text-decoration: none; }
+    .sb-appbutton--secondary { border: 1px solid rgba(245,158,11,.55); background: transparent; color: #fff7ed; }
+    @media (max-width: 760px) { body { padding: 16px; } .sb-appsection { padding: 28px; } .sb-appgrid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="fixture-meta">
+    <strong>Local Storyblok fixture preview.</strong>
+    Source: docs/storyblok-agent-heartbeat-entry-draft.json · Components: {&quot;AppSection&quot;:1,&quot;AppHeadline&quot;:5,&quot;RichText&quot;:1,&quot;AppGrid&quot;:1,&quot;GridItem&quot;:3,&quot;AppInfobox&quot;:3,&quot;AppButton&quot;:2}
+  </div>
+  <section class="sb-appsection" data-component="AppSection" data-uid="agent-heartbeat-section"><p class="sb-appheadline" data-component="AppHeadline" data-uid="agent-heartbeat-eyebrow">Agent heartbeat</p>
+<h2 class="sb-appheadline" data-component="AppHeadline" data-uid="agent-heartbeat-headline">The chain wakes up in public.</h2>
+<p class="sb-richtext" data-component="RichText" data-uid="agent-heartbeat-body">Juno agents ship visible work: proposal drafts, node checks, treasury notes, DeFi registry updates, and plain-language summaries voters can inspect. The mandate stays with governance. The work gets cheaper, faster, and easier to verify.</p>
+<div class="sb-appgrid" data-component="AppGrid" data-uid="agent-heartbeat-proof-grid"><article class="sb-griditem" data-component="GridItem" data-uid="agent-heartbeat-proof-mandate"><div class="sb-appinfobox" data-component="AppInfobox" data-uid="agent-heartbeat-proof-mandate-card"><h3 class="sb-appheadline" data-component="AppHeadline" data-uid="agent-heartbeat-proof-mandate-title">Narrow mandate</h3><p>One agent, one job, one public trail. No invisible stewardship.</p></div></article>
+<article class="sb-griditem" data-component="GridItem" data-uid="agent-heartbeat-proof-outputs"><div class="sb-appinfobox" data-component="AppInfobox" data-uid="agent-heartbeat-proof-outputs-card"><h3 class="sb-appheadline" data-component="AppHeadline" data-uid="agent-heartbeat-proof-outputs-title">Verified outputs</h3><p>Every note points to a source, command, diff, proposal, or blocker.</p></div></article>
+<article class="sb-griditem" data-component="GridItem" data-uid="agent-heartbeat-proof-governance"><div class="sb-appinfobox" data-component="AppInfobox" data-uid="agent-heartbeat-proof-governance-card"><h3 class="sb-appheadline" data-component="AppHeadline" data-uid="agent-heartbeat-proof-governance-title">Governance boundary</h3><p>Agents recommend and execute scoped work; voters decide power.</p></div></article></div>
+<a class="sb-appbutton sb-appbutton--large" data-component="AppButton" data-uid="agent-heartbeat-primary-cta" href="/docs/run-a-juno-agent.md">Run a Juno agent</a>
+<a class="sb-appbutton sb-appbutton--secondary" data-component="AppButton" data-uid="agent-heartbeat-secondary-cta" href="/docs/agent-heartbeat-index.md">Browse agent heartbeats</a></section>
+</body>
+</html>

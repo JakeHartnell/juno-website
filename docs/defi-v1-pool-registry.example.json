@@ -1,0 +1,30 @@
+{
+  "chainId": "juno-1",
+  "factory": "juno1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+  "updatedAt": "2026-06-28T20:51:14Z",
+  "pools": [
+    {
+      "label": "JUNO / USDC",
+      "pair": "juno1pppppppppppppppppppppppppppppppppppppp",
+      "lpToken": "factory/juno1pppppppppppppppppppppppppppppppppppppp/astroport/share",
+      "type": "xyk",
+      "feeBps": 30,
+      "assets": [
+        {
+          "kind": "native",
+          "id": "ujuno",
+          "symbol": "JUNO",
+          "decimals": 6
+        },
+        {
+          "kind": "ibc",
+          "id": "ibc/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "symbol": "USDC",
+          "decimals": 6
+        }
+      ],
+      "explorer": "https://www.mintscan.io/juno/wasm/contract/juno1pppppppppppppppppppppppppppppppppppppp",
+      "notes": "Template only: replace dummy addresses and denom with verified Juno mainnet factory, pair, LP, and IBC denom before using in the UI."
+    }
+  ]
+}

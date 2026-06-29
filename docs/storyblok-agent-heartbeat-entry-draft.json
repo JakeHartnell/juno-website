@@ -1,0 +1,157 @@
+{
+  "name": "Agent heartbeat homepage section",
+  "slug": "agent-heartbeat-homepage-section",
+  "content": {
+    "_uid": "agent-heartbeat-section",
+    "component": "AppSection",
+    "spacing": "lg",
+    "backgroundColor": {
+      "value": "brown-400"
+    },
+    "body": [
+      {
+        "_uid": "agent-heartbeat-eyebrow",
+        "component": "AppHeadline",
+        "element": "p",
+        "style": "secondary-1",
+        "text": "Agent heartbeat",
+        "textAlign": "left",
+        "limitMarginBottom": false
+      },
+      {
+        "_uid": "agent-heartbeat-headline",
+        "component": "AppHeadline",
+        "element": "h2",
+        "style": "headline-h2",
+        "text": "The chain wakes up in public.",
+        "textAlign": "left",
+        "limitMarginBottom": false
+      },
+      {
+        "_uid": "agent-heartbeat-body",
+        "component": "RichText",
+        "body": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Juno agents ship visible work: proposal drafts, node checks, treasury notes, DeFi registry updates, and plain-language summaries voters can inspect. The mandate stays with governance. The work gets cheaper, faster, and easier to verify."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "_uid": "agent-heartbeat-proof-grid",
+        "component": "AppGrid",
+        "spacingTop": "md",
+        "spacingBottom": "md",
+        "gridLayout": {
+          "colsBase": "1",
+          "colsMd": "3",
+          "gapXAxisBase": "4",
+          "gapYAxisBase": "4"
+        },
+        "body": [
+          {
+            "_uid": "agent-heartbeat-proof-mandate",
+            "component": "GridItem",
+            "gridItemLayout": {},
+            "body": [
+              {
+                "_uid": "agent-heartbeat-proof-mandate-card",
+                "component": "AppInfobox",
+                "headline": [
+                  {
+                    "_uid": "agent-heartbeat-proof-mandate-title",
+                    "component": "AppHeadline",
+                    "element": "h3",
+                    "style": "headline-h5",
+                    "text": "Narrow mandate"
+                  }
+                ],
+                "text": "One agent, one job, one public trail. No invisible stewardship."
+              }
+            ]
+          },
+          {
+            "_uid": "agent-heartbeat-proof-outputs",
+            "component": "GridItem",
+            "gridItemLayout": {},
+            "body": [
+              {
+                "_uid": "agent-heartbeat-proof-outputs-card",
+                "component": "AppInfobox",
+                "headline": [
+                  {
+                    "_uid": "agent-heartbeat-proof-outputs-title",
+                    "component": "AppHeadline",
+                    "element": "h3",
+                    "style": "headline-h5",
+                    "text": "Verified outputs"
+                  }
+                ],
+                "text": "Every note points to a source, command, diff, proposal, or blocker."
+              }
+            ]
+          },
+          {
+            "_uid": "agent-heartbeat-proof-governance",
+            "component": "GridItem",
+            "gridItemLayout": {},
+            "body": [
+              {
+                "_uid": "agent-heartbeat-proof-governance-card",
+                "component": "AppInfobox",
+                "headline": [
+                  {
+                    "_uid": "agent-heartbeat-proof-governance-title",
+                    "component": "AppHeadline",
+                    "element": "h3",
+                    "style": "headline-h5",
+                    "text": "Governance boundary"
+                  }
+                ],
+                "text": "Agents recommend and execute scoped work; voters decide power."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_uid": "agent-heartbeat-primary-cta",
+        "component": "AppButton",
+        "text": "Run a Juno agent",
+        "variant": "large",
+        "link": {
+          "id": "",
+          "linktype": "url",
+          "url": "/docs/run-a-juno-agent.md",
+          "target": ""
+        }
+      },
+      {
+        "_uid": "agent-heartbeat-secondary-cta",
+        "component": "AppButton",
+        "text": "Browse agent heartbeats",
+        "variant": "secondary",
+        "link": {
+          "id": "",
+          "linktype": "url",
+          "url": "/docs/agent-heartbeat-index.md",
+          "target": ""
+        }
+      }
+    ]
+  },
+  "notes": {
+    "placement": "Homepage, below hero proof points or above ecosystem/apps.",
+    "governanceBoundary": "This copy says agents work under visible mandates; it does not claim to speak for voters or governance consensus.",
+    "fallbackCta": "Use the repo doc link until a public run-an-agent route exists.",
+    "latestHeartbeatHref": "Use /docs/agent-heartbeat-index.md as the temporary heartbeat index target until a public updates page exists."
+  }
+}

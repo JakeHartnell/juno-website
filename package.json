@@ -11,6 +11,12 @@
     "postinstall": "nuxt prepare",
     "type-check": "nuxi typecheck",
     "lint": "eslint --ext .ts,.js,.vue .",
+    "docs:links": "node scripts/check-local-markdown-links.mjs README.md",
+    "docs:links:all": "node scripts/check-local-markdown-links.mjs --all",
+    "defi:registry:validate": "node scripts/validate-defi-registry.mjs docs/defi-v1-pool-registry.example.json",
+    "defi:registry:test": "node scripts/test-defi-registry-validator.mjs",
+    "storyblok:heartbeat:preview": "node scripts/render-storyblok-fixture.mjs docs/storyblok-agent-heartbeat-entry-draft.json docs/storyblok-agent-heartbeat-preview.html",
+    "storyblok:heartbeat:check": "node scripts/check-storyblok-heartbeat-fixture.mjs docs/storyblok-agent-heartbeat-entry-draft.json",
     "local-ssl-proxy": "local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem"
   },
   "devDependencies": {
