@@ -1,11 +1,17 @@
 import type {
   AssetInfo,
+  DexPoolRegistryEntry,
+  DexPoolResponse,
+  DexRegistryAsset,
+  DexRegistryV1,
+  DexSimulationResponse,
   JunoDexPair,
   JunoDexPairsResponse,
   JunoDexRuntimeConfig,
   JunoDexSwapDraft,
   JunoDexWalletState,
-  NativeAssetInfo
+  NativeAssetInfo,
+  TokenAssetInfo
 } from '@/types/dex'
 
 interface KeplrLike {
@@ -21,25 +27,47 @@ declare global {
 }
 
 function encodeSmartQuery(query: Record<string, unknown>) {
-  return btoa(JSON.stringify(query))
+  if (process.client) return window.btoa(JSON.stringify(query))
+
+  return Buffer.from(JSON.stringify(query)).toString('base64')
 }
 
-function isConfiguredAddress(address: string) {
-  return address.startsWith('juno1') && !address.includes('replace')
+function isConfiguredAddress(address?: string) {
+  return Boolean(address?.startsWith('juno1')) && !String(address).includes('replace')
 }
 
 function nativeAsset(denom: string): NativeAssetInfo {
-  return {
-    native_token: {
-      denom
-    }
-  }
+  return { native_token: { denom } }
+}
+
+function tokenAsset(contract: string): TokenAssetInfo {
+  return { token: { contract_addr: contract } }
+}
+
+function assetInfoFromRegistry(asset: DexRegistryAsset): AssetInfo {
+  if (asset.kind === 'cw20') return tokenAsset(asset.id)
+
+  return nativeAsset(asset.id)
 }
 
 function assetLabel(asset: AssetInfo) {
   if ('native_token' in asset) return asset.native_token.denom
 
   return asset.token.contract_addr
+}
+
+function shortAddress(address: string) {
+  return `${address.slice(0, 10)}…${address.slice(-6)}`
+}
+
+function registryHasLaunchValues(registry: DexRegistryV1) {
+  if (!isConfiguredAddress(registry.factory) || !registry.pools.length) return false
+
+  return registry.pools.every(pool => (
+    isConfiguredAddress(pool.pair) &&
+    pool.assets.length === 2 &&
+    pool.assets.every(asset => asset.id && !asset.id.toLowerCase().includes('replace'))
+  ))
 }
 
 export function useJunoDex() {
@@ -55,25 +83,89 @@ export function useJunoDex() {
     factoryAddress: runtimeConfig.public.junoDexFactoryAddress as string,
     routerAddress: runtimeConfig.public.junoDexRouterAddress as string,
     coinRegistryAddress: runtimeConfig.public.junoDexCoinRegistryAddress as string,
-    incentivesAddress: runtimeConfig.public.junoDexIncentivesAddress as string
+    incentivesAddress: runtimeConfig.public.junoDexIncentivesAddress as string,
+    registryUrl: runtimeConfig.public.junoDexRegistryUrl as string,
+    explorerBaseUrl: runtimeConfig.public.junoDexExplorerBaseUrl as string
   }))
 
-  const pools = ref<JunoDexPair[]>([])
+  const registry = ref<DexRegistryV1 | null>(null)
+  const registryError = ref('')
+  const registryLoading = ref(false)
+  const livePairs = ref<JunoDexPair[]>([])
   const poolsError = ref('')
   const poolsLoading = ref(false)
   const wallet = ref<JunoDexWalletState | null>(null)
   const walletError = ref('')
 
-  const isFactoryReady = computed(() => isConfiguredAddress(dexConfig.value.factoryAddress))
-  const poolCount = computed(() => pools.value.length)
+  const registryPools = computed(() => registry.value?.pools.filter(pool => pool.enabled) ?? [])
+  const tokens = computed(() => {
+    const map = new Map<string, DexRegistryAsset>()
+
+    registryPools.value.forEach((pool) => {
+      pool.assets.forEach(asset => map.set(asset.id, asset))
+    })
+
+    if (!map.has(dexConfig.value.nativeDenom))
+      map.set(dexConfig.value.nativeDenom, {
+        kind: 'native',
+        id: dexConfig.value.nativeDenom,
+        symbol: dexConfig.value.displayDenom,
+        decimals: 6
+      })
+
+    return [...map.values()]
+  })
+  const isFactoryReady = computed(() => isConfiguredAddress(dexConfig.value.factoryAddress || registry.value?.factory))
+  const launchRegistryReady = computed(() => registry.value ? registryHasLaunchValues(registry.value) : false)
+  const poolCount = computed(() => registryPools.value.length || livePairs.value.length)
+
+  function poolByPair(pair: string) {
+    return registryPools.value.find(pool => pool.pair === pair)
+  }
+
+  function tokenById(id: string) {
+    return tokens.value.find(token => token.id === id)
+  }
+
+  function displayAmount(amount: string, asset?: DexRegistryAsset) {
+    const decimals = asset?.decimals ?? 6
+    const value = Number(amount) / (10 ** decimals)
+
+    if (!Number.isFinite(value)) return amount
+
+    return value.toLocaleString(undefined, { maximumFractionDigits: 6 })
+  }
+
+  function explorerLink(path: string) {
+    return `${dexConfig.value.explorerBaseUrl.replace(/\/$/, '')}/${path}`
+  }
+
+  async function loadRegistry() {
+    registryLoading.value = true
+    registryError.value = ''
+
+    try {
+      registry.value = await $fetch<DexRegistryV1>(dexConfig.value.registryUrl)
+    } catch (error) {
+      registry.value = null
+      registryError.value = error instanceof Error ? error.message : 'DEX registry could not be loaded.'
+    } finally {
+      registryLoading.value = false
+    }
+  }
+
+  async function querySmart<T>(contractAddress: string, query: Record<string, unknown>) {
+    if (!isConfiguredAddress(contractAddress)) throw new Error('A real Juno contract address is required for live queries.')
+
+    const encoded = encodeURIComponent(encodeSmartQuery(query))
+
+    return await $fetch<T>(`${dexConfig.value.restEndpoint}/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${encoded}`)
+  }
 
   async function queryFactory<T>(query: Record<string, unknown>) {
-    if (!isFactoryReady.value)
-      throw new Error('Set NUXT_PUBLIC_JUNO_DEX_FACTORY_ADDRESS to query live Astroport-Juno pools.')
+    const factory = dexConfig.value.factoryAddress || registry.value?.factory || ''
 
-    const encoded = encodeSmartQuery(query)
-
-    return await $fetch<T>(`${dexConfig.value.restEndpoint}/cosmwasm/wasm/v1/contract/${dexConfig.value.factoryAddress}/smart/${encoded}`)
+    return await querySmart<T>(factory, query)
   }
 
   async function discoverPools() {
@@ -83,19 +175,42 @@ export function useJunoDex() {
     try {
       const response = await queryFactory<JunoDexPairsResponse>({ pairs: { limit: 30 } })
 
-      pools.value = response.pairs ?? []
+      livePairs.value = response.pairs ?? []
     } catch (error) {
-      pools.value = []
+      livePairs.value = []
       poolsError.value = error instanceof Error ? error.message : 'Pool discovery failed.'
     } finally {
       poolsLoading.value = false
     }
   }
 
+  async function queryPool(pool: DexPoolRegistryEntry | string) {
+    const pair = typeof pool === 'string' ? pool : pool.pair
+
+    return await querySmart<DexPoolResponse>(pair, { pool: {} })
+  }
+
+  async function simulateSwap(pool: DexPoolRegistryEntry, draft: JunoDexSwapDraft) {
+    const offerAsset = tokenById(draft.offerAssetId)
+
+    if (!offerAsset) throw new Error('Choose an offer asset from the verified registry.')
+    if (!draft.amount || Number(draft.amount) <= 0) throw new Error('Enter an amount in base units.')
+
+    return await querySmart<DexSimulationResponse>(pool.pair, {
+      simulation: {
+        offer_asset: {
+          info: assetInfoFromRegistry(offerAsset),
+          amount: draft.amount
+        },
+        ask_asset_info: draft.askAssetId ? assetInfoFromRegistry(tokenById(draft.askAssetId) || offerAsset) : null
+      }
+    })
+  }
+
   async function connectWallet() {
     walletError.value = ''
 
-    if (!window.keplr) {
+    if (!process.client || !window.keplr) {
       walletError.value = 'Keplr is not available in this browser.'
 
       return
@@ -122,6 +237,7 @@ export function useJunoDex() {
       })
 
       await window.keplr.enable(dexConfig.value.chainId)
+
       const key = await window.keplr.getKey(dexConfig.value.chainId)
 
       wallet.value = {
@@ -135,51 +251,67 @@ export function useJunoDex() {
     }
   }
 
-  function buildPairQuery(draft: JunoDexSwapDraft) {
+  function buildPairQuery(pool: DexPoolRegistryEntry) {
     return {
       pair: {
-        asset_infos: [
-          nativeAsset(draft.offerDenom),
-          nativeAsset(draft.askDenom)
-        ]
+        asset_infos: pool.assets.map(assetInfoFromRegistry)
       }
     }
   }
 
-  function buildSwapDraft(draft: JunoDexSwapDraft) {
+  function buildSwapExecute(pool: DexPoolRegistryEntry, draft: JunoDexSwapDraft, quote?: DexSimulationResponse) {
+    const offerAsset = tokenById(draft.offerAssetId) || pool.assets[0]
+    const askAsset = tokenById(draft.askAssetId) || pool.assets[1]
+    const minReceive = quote
+      ? String(Math.floor(Number(quote.return_amount) * (10000 - draft.slippageBps) / 10000))
+      : null
+
     return {
-      contract: dexConfig.value.routerAddress,
+      contract: pool.pair,
       msg: {
-        execute_swap_operations: {
-          operations: [{
-            astro_swap: {
-              offer_asset_info: nativeAsset(draft.offerDenom),
-              ask_asset_info: nativeAsset(draft.askDenom)
-            }
-          }],
-          minimum_receive: null,
+        swap: {
+          offer_asset: {
+            info: assetInfoFromRegistry(offerAsset),
+            amount: draft.amount
+          },
+          ask_asset_info: assetInfoFromRegistry(askAsset),
+          belief_price: null,
+          max_spread: String(draft.slippageBps / 10000),
           to: wallet.value?.address ?? null
         }
       },
-      funds: [{
-        denom: draft.offerDenom,
-        amount: draft.amount
-      }]
+      funds: offerAsset.kind === 'cw20' ? [] : [{ denom: offerAsset.id, amount: draft.amount }],
+      minimumReceive: minReceive
     }
   }
 
   return {
+    assetInfoFromRegistry,
     assetLabel,
     buildPairQuery,
-    buildSwapDraft,
+    buildSwapExecute,
     connectWallet,
     dexConfig,
     discoverPools,
+    displayAmount,
+    explorerLink,
     isFactoryReady,
+    launchRegistryReady,
+    livePairs,
+    loadRegistry,
+    poolByPair,
     poolCount,
-    pools,
     poolsError,
     poolsLoading,
+    queryPool,
+    registry,
+    registryError,
+    registryLoading,
+    registryPools,
+    shortAddress,
+    simulateSwap,
+    tokenById,
+    tokens,
     wallet,
     walletError
   }

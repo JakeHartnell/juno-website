@@ -63,7 +63,9 @@ export default defineNuxtConfig({
       junoDexFactoryAddress: process.env.NUXT_PUBLIC_JUNO_DEX_FACTORY_ADDRESS ?? '',
       junoDexRouterAddress: process.env.NUXT_PUBLIC_JUNO_DEX_ROUTER_ADDRESS ?? '',
       junoDexCoinRegistryAddress: process.env.NUXT_PUBLIC_JUNO_DEX_COIN_REGISTRY_ADDRESS ?? '',
-      junoDexIncentivesAddress: process.env.NUXT_PUBLIC_JUNO_DEX_INCENTIVES_ADDRESS ?? ''
+      junoDexIncentivesAddress: process.env.NUXT_PUBLIC_JUNO_DEX_INCENTIVES_ADDRESS ?? '',
+      junoDexRegistryUrl: process.env.NUXT_PUBLIC_JUNO_DEX_REGISTRY_URL ?? '/dex/registry.juno-1.json',
+      junoDexExplorerBaseUrl: process.env.NUXT_PUBLIC_JUNO_DEX_EXPLORER_BASE_URL ?? 'https://www.mintscan.io/juno'
     }
   },
   googleFonts: {

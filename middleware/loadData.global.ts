@@ -3,7 +3,7 @@ import { useConfigStore } from '@/stores/config'
 import { useLinksStore } from '@/stores/links'
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path.startsWith('/defi')) return
+  if (to.path.startsWith('/defi') || to.path.startsWith('/dex')) return
 
   const storyStore = useStoryStore()
   const configStore = useConfigStore()

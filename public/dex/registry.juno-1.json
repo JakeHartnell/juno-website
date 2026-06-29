@@ -1,0 +1,11 @@
+{
+  "chainId": "juno-1",
+  "updatedAt": "2026-06-29T00:00:00Z",
+  "rpcEndpoint": "https://rpc-juno.itastakers.com",
+  "restEndpoint": "https://lcd-juno.itastakers.com",
+  "factory": "",
+  "nativeCoinRegistry": "",
+  "router": "",
+  "incentives": "",
+  "pools": []
+}
