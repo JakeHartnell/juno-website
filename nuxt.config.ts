@@ -52,7 +52,18 @@ export default defineNuxtConfig({
     public: {
       storyblokContentVersion: process.env.STORYBLOK_CONTENT_VERSION,
       youtubeApiKey: process.env.YOUTUBE_API_KEY,
-      metaLocationOrigin: process.env.META_LOCATION_ORIGIN
+      metaLocationOrigin: process.env.META_LOCATION_ORIGIN,
+      junoDexChainId: process.env.NUXT_PUBLIC_JUNO_DEX_CHAIN_ID ?? 'uni-7',
+      junoDexChainName: process.env.NUXT_PUBLIC_JUNO_DEX_CHAIN_NAME ?? 'Juno Testnet',
+      junoDexRpcEndpoint: process.env.NUXT_PUBLIC_JUNO_DEX_RPC_ENDPOINT ?? 'https://rpc.uni.junonetwork.io',
+      junoDexRestEndpoint: process.env.NUXT_PUBLIC_JUNO_DEX_REST_ENDPOINT ?? 'https://lcd.uni.junonetwork.io',
+      junoDexFeeDenom: process.env.NUXT_PUBLIC_JUNO_DEX_FEE_DENOM ?? 'ujunox',
+      junoDexDisplayDenom: process.env.NUXT_PUBLIC_JUNO_DEX_DISPLAY_DENOM ?? 'JUNOX',
+      junoDexNativeDenom: process.env.NUXT_PUBLIC_JUNO_DEX_NATIVE_DENOM ?? 'ujunox',
+      junoDexFactoryAddress: process.env.NUXT_PUBLIC_JUNO_DEX_FACTORY_ADDRESS ?? '',
+      junoDexRouterAddress: process.env.NUXT_PUBLIC_JUNO_DEX_ROUTER_ADDRESS ?? '',
+      junoDexCoinRegistryAddress: process.env.NUXT_PUBLIC_JUNO_DEX_COIN_REGISTRY_ADDRESS ?? '',
+      junoDexIncentivesAddress: process.env.NUXT_PUBLIC_JUNO_DEX_INCENTIVES_ADDRESS ?? ''
     }
   },
   googleFonts: {
