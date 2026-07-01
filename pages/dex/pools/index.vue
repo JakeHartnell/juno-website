@@ -3,6 +3,7 @@ const {
   assetLabel,
   discoverPools,
   explorerLink,
+  liveQueriesDisabled,
   livePairs,
   loadRegistry,
   poolsError,
@@ -99,7 +100,7 @@ useSeoMeta({
         <p class="mt-3 text-sm text-grey-100">
           This check queries the configured Astroport factory for <code>{ pairs: { limit: 30 } }</code>. It is a smoke path, not a replacement for the strict launch registry.
         </p>
-        <button class="mt-5 rounded-full bg-salmon-200 px-5 py-3 text-sm font-semibold text-brown-500 transition hover:bg-salmon-100 disabled:cursor-not-allowed disabled:opacity-50" :disabled="poolsLoading" type="button" @click="discoverPools">
+        <button class="mt-5 rounded-full bg-salmon-200 px-5 py-3 text-sm font-semibold text-brown-500 transition hover:bg-salmon-100 disabled:cursor-not-allowed disabled:opacity-50" :disabled="poolsLoading || liveQueriesDisabled" type="button" @click="discoverPools">
           {{ poolsLoading ? 'Querying…' : 'Discover live pools' }}
         </button>
 

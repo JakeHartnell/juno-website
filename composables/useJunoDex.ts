@@ -60,6 +60,10 @@ function shortAddress(address: string) {
   return `${address.slice(0, 10)}…${address.slice(-6)}`
 }
 
+function trimEndpoint(endpoint: string) {
+  return endpoint.replace(/\/$/, '')
+}
+
 function registryHasLaunchValues(registry: DexRegistryV1) {
   if (!isConfiguredAddress(registry.factory) || !registry.pools.length) return false
 
@@ -68,6 +72,22 @@ function registryHasLaunchValues(registry: DexRegistryV1) {
     pool.assets.length === 2 &&
     pool.assets.every(asset => asset.id && !asset.id.toLowerCase().includes('replace'))
   ))
+}
+
+function registryNativeDenoms(registry: DexRegistryV1) {
+  const denoms = new Set<string>()
+
+  if (registry.nativeDenom) denoms.add(registry.nativeDenom)
+
+  registry.pools
+    .filter(pool => pool.enabled)
+    .forEach((pool) => {
+      pool.assets
+        .filter(asset => asset.kind === 'native')
+        .forEach(asset => denoms.add(asset.id))
+    })
+
+  return [...denoms]
 }
 
 export function useJunoDex() {
@@ -105,11 +125,13 @@ export function useJunoDex() {
       pool.assets.forEach(asset => map.set(asset.id, asset))
     })
 
-    if (!map.has(dexConfig.value.nativeDenom))
-      map.set(dexConfig.value.nativeDenom, {
+    const fallbackDenom = registry.value ? registryNativeDenoms(registry.value)[0] : dexConfig.value.nativeDenom
+
+    if (fallbackDenom && !map.has(fallbackDenom))
+      map.set(fallbackDenom, {
         kind: 'native',
-        id: dexConfig.value.nativeDenom,
-        symbol: dexConfig.value.displayDenom,
+        id: fallbackDenom,
+        symbol: fallbackDenom === dexConfig.value.nativeDenom ? dexConfig.value.displayDenom : fallbackDenom.toUpperCase(),
         decimals: 6
       })
 
@@ -117,6 +139,35 @@ export function useJunoDex() {
   })
   const isFactoryReady = computed(() => isConfiguredAddress(dexConfig.value.factoryAddress || registry.value?.factory))
   const launchRegistryReady = computed(() => registry.value ? registryHasLaunchValues(registry.value) : false)
+  const registryConfigError = computed(() => {
+    if (!registry.value) return ''
+
+    const nativeDenoms = registryNativeDenoms(registry.value)
+    const primaryNativeDenom = nativeDenoms[0]
+
+    const mismatches = [
+      registry.value.chainId !== dexConfig.value.chainId
+        ? `chainId runtime=${dexConfig.value.chainId} registry=${registry.value.chainId}`
+        : '',
+      trimEndpoint(registry.value.rpcEndpoint) !== trimEndpoint(dexConfig.value.rpcEndpoint)
+        ? `rpcEndpoint runtime=${dexConfig.value.rpcEndpoint} registry=${registry.value.rpcEndpoint}`
+        : '',
+      trimEndpoint(registry.value.restEndpoint) !== trimEndpoint(dexConfig.value.restEndpoint)
+        ? `restEndpoint runtime=${dexConfig.value.restEndpoint} registry=${registry.value.restEndpoint}`
+        : '',
+      primaryNativeDenom && !nativeDenoms.includes(dexConfig.value.nativeDenom)
+        ? `nativeDenom runtime=${dexConfig.value.nativeDenom} registry=${nativeDenoms.join(',')}`
+        : '',
+      primaryNativeDenom && dexConfig.value.feeDenom !== primaryNativeDenom
+        ? `feeDenom runtime=${dexConfig.value.feeDenom} registryNativeDenom=${primaryNativeDenom}`
+        : ''
+    ].filter(Boolean)
+
+    return mismatches.length
+      ? `DEX live queries disabled: runtime config does not match ${dexConfig.value.registryUrl} (${mismatches.join('; ')}).`
+      : ''
+  })
+  const liveQueriesDisabled = computed(() => Boolean(registryConfigError.value))
   const poolCount = computed(() => registryPools.value.length || livePairs.value.length)
 
   function poolByPair(pair: string) {
@@ -156,10 +207,12 @@ export function useJunoDex() {
 
   async function querySmart<T>(contractAddress: string, query: Record<string, unknown>) {
     if (!isConfiguredAddress(contractAddress)) throw new Error('A real Juno contract address is required for live queries.')
+    if (registryConfigError.value) throw new Error(registryConfigError.value)
 
     const encoded = encodeURIComponent(encodeSmartQuery(query))
+    const restEndpoint = trimEndpoint(registry.value?.restEndpoint || dexConfig.value.restEndpoint)
 
-    return await $fetch<T>(`${dexConfig.value.restEndpoint}/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${encoded}`)
+    return await $fetch<T>(`${restEndpoint}/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${encoded}`)
   }
 
   async function queryFactory<T>(query: Record<string, unknown>) {
@@ -298,6 +351,7 @@ export function useJunoDex() {
     isFactoryReady,
     launchRegistryReady,
     livePairs,
+    liveQueriesDisabled,
     loadRegistry,
     poolByPair,
     poolCount,
@@ -305,6 +359,7 @@ export function useJunoDex() {
     poolsLoading,
     queryPool,
     registry,
+    registryConfigError,
     registryError,
     registryLoading,
     registryPools,

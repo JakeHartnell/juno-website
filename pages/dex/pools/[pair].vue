@@ -5,6 +5,7 @@ const route = useRoute()
 const {
   displayAmount,
   explorerLink,
+  liveQueriesDisabled,
   loadRegistry,
   poolByPair,
   queryPool,
@@ -33,7 +34,8 @@ async function refreshPool() {
 
 onMounted(async () => {
   await loadRegistry()
-  await refreshPool()
+
+  if (!liveQueriesDisabled.value) await refreshPool()
 })
 
 useSeoMeta({
@@ -106,7 +108,7 @@ useSeoMeta({
               Queries <code>{ pool: {} }</code> directly from the pair contract.
             </p>
           </div>
-          <button class="rounded-full bg-cyan-200 px-4 py-2 text-xs font-semibold text-cyan-500 disabled:opacity-50" :disabled="liveLoading" type="button" @click="refreshPool">
+          <button class="rounded-full bg-cyan-200 px-4 py-2 text-xs font-semibold text-cyan-500 disabled:opacity-50" :disabled="liveLoading || liveQueriesDisabled" type="button" @click="refreshPool">
             Refresh
           </button>
         </div>

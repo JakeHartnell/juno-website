@@ -5,6 +5,7 @@ const {
   buildPairQuery,
   buildSwapExecute,
   displayAmount,
+  liveQueriesDisabled,
   loadRegistry,
   poolByPair,
   registryPools,
@@ -26,7 +27,7 @@ const swapDraft = reactive<JunoDexSwapDraft>({
 })
 
 const currentPool = computed(() => poolByPair(selectedPair.value) || registryPools.value[0])
-const canQuote = computed(() => Boolean(currentPool.value && swapDraft.offerAssetId && swapDraft.askAssetId && swapDraft.amount))
+const canQuote = computed(() => Boolean(!liveQueriesDisabled.value && currentPool.value && swapDraft.offerAssetId && swapDraft.askAssetId && swapDraft.amount))
 const pairQueryPreview = computed(() => currentPool.value ? JSON.stringify(buildPairQuery(currentPool.value), null, 2) : '{}')
 const swapMsgPreview = computed(() => currentPool.value ? JSON.stringify(buildSwapExecute(currentPool.value, swapDraft, quote.value || undefined), null, 2) : '{}')
 const minReceive = computed(() => {

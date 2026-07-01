@@ -1,11 +1,39 @@
 {
   "chainId": "juno-1",
-  "updatedAt": "2026-06-29T00:00:00Z",
-  "rpcEndpoint": "https://rpc-juno.itastakers.com",
-  "restEndpoint": "https://lcd-juno.itastakers.com",
-  "factory": "",
-  "nativeCoinRegistry": "",
-  "router": "",
-  "incentives": "",
-  "pools": []
+  "updatedAt": "2026-07-01T03:30:09Z",
+  "rpcEndpoint": "https://juno-rpc.publicnode.com:443",
+  "restEndpoint": "https://juno-rest.publicnode.com",
+  "nativeDenom": "ujuno",
+  "factory": "juno1n5ettlqdt06nd346mnqy65fahcvmncaazpwn8s3m0df3ldv0d2yqjqelca",
+  "nativeCoinRegistry": "juno1qwer7jleluth33trk2ywqvp6vwjh4j4zar3ag6dw5d8derkpel0sq8vfh2",
+  "router": "juno1fppwfa2efpsahvwlqprrshjth2mfqyd8n80yd7z5kpjspq30s8ksrapa8s",
+  "incentives": "juno1h0auy2knfyhkcn877cqun0fu00safgsjwvt82d4cvd0slv8q7wtsk59598",
+  "pools": [
+    {
+      "id": "ujuno-junoagenttest-xyk",
+      "label": "JUNO / Juno Agent Test",
+      "pair": "juno1s0klsaye2vuueet7utec6vmyua3pq6wv8ddr2phcrgg8v9gw9r5sqvfefv",
+      "lpToken": "factory/juno1s0klsaye2vuueet7utec6vmyua3pq6wv8ddr2phcrgg8v9gw9r5sqvfefv/astroport/share",
+      "type": "xyk",
+      "feeBps": 30,
+      "assets": [
+        {
+          "kind": "native",
+          "id": "ujuno",
+          "symbol": "JUNO",
+          "decimals": 6
+        },
+        {
+          "kind": "native",
+          "id": "factory/juno1xsx746x4375g39f9fj07hr7qm0wuf0ksl0an76/junoagenttest202607010323",
+          "symbol": "JAT",
+          "decimals": 6
+        }
+      ],
+      "explorer": "https://www.mintscan.io/juno/address/juno1s0klsaye2vuueet7utec6vmyua3pq6wv8ddr2phcrgg8v9gw9r5sqvfefv",
+      "enabled": true,
+      "featured": true,
+      "notes": "Thin-liquidity test pool seeded by the Juno agent for Astroport-Juno v1 launch verification."
+    }
+  ]
 }

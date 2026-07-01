@@ -6,6 +6,7 @@ const {
   launchRegistryReady,
   loadRegistry,
   poolCount,
+  registryConfigError,
   registryError,
   registryLoading,
   shortAddress,
@@ -85,6 +86,9 @@ onMounted(() => {
             </p>
             <p v-if="registryError" class="mt-4 rounded-2xl border border-yellow-100/20 bg-yellow-200/30 p-3 text-sm text-yellow-100">
               Registry warning: {{ registryError }}
+            </p>
+            <p v-if="registryConfigError" class="mt-4 rounded-2xl border border-salmon-200/20 bg-salmon-400/20 p-3 text-sm text-salmon-100">
+              {{ registryConfigError }}
             </p>
 
             <dl class="mt-6 grid grid-cols-3 gap-3 text-sm">

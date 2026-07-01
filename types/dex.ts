@@ -59,6 +59,7 @@ export interface DexRegistryV1 {
   updatedAt: string
   rpcEndpoint: string
   restEndpoint: string
+  nativeDenom?: string
   factory: string
   nativeCoinRegistry?: string
   router?: string
