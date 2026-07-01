@@ -20,6 +20,10 @@ interface KeplrLike {
   getKey: (chainId: string) => Promise<{ bech32Address: string, name: string }>
 }
 
+interface CosmWasmRestSmartQueryResponse<T> {
+  data: T
+}
+
 declare global {
   interface Window {
     keplr?: KeplrLike
@@ -212,7 +216,9 @@ export function useJunoDex() {
     const encoded = encodeURIComponent(encodeSmartQuery(query))
     const restEndpoint = trimEndpoint(registry.value?.restEndpoint || dexConfig.value.restEndpoint)
 
-    return await $fetch<T>(`${restEndpoint}/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${encoded}`)
+    const response = await $fetch<CosmWasmRestSmartQueryResponse<T>>(`${restEndpoint}/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${encoded}`)
+
+    return response.data
   }
 
   async function queryFactory<T>(query: Record<string, unknown>) {
